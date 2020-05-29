@@ -1,0 +1,28 @@
+{
+  "name": "scraper",
+  "version": "0.1.0",
+  "description": "web scraper",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Covertness/scraper.git"
+  },
+  "keywords": [
+    "scraper"
+  ],
+  "author": "Covertness",
+  "license": "MIT",
+  "dependencies": {
+    "@koa/router": "^8.0.8",
+    "koa": "^2.12.0",
+    "koa-json": "^2.0.2",
+    "puppeteer": "^3.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
