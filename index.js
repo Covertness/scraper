@@ -15,7 +15,7 @@ async function run() {
 
     app.use(json()).use(router.routes()).use(router.allowedMethods());
 
-    const port = 3000;
+    const port = process.env["PORT"] || 3000;
     app.listen(port);
     console.log(`server listen on port: ${port}`);
 }
