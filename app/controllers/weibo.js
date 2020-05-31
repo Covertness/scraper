@@ -34,7 +34,7 @@ weiboRouter.get('/:id', async (ctx) => {
     const page = await ctx.browser.newPage();
     await page.goto(`https://weibo.com/u/${ctx.params['id']}`);
     try {
-        await page.waitForSelector('.WB_detail', {timeout: 5000});
+        await page.waitForSelector('.WB_detail', {timeout: 10000});
     } catch {
         page.close();
         ctx.status = 404;
