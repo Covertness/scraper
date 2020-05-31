@@ -11,7 +11,7 @@ const router = new Router();
 router.use('/weibo', weiboRouter.routes(), weiboRouter.allowedMethods());
 
 async function run() {
-    app.context.browser = await puppeteer.launch({headless: true});
+    app.context.browser = await puppeteer.launch({headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']});
 
     app.use(json()).use(router.routes()).use(router.allowedMethods());
 
