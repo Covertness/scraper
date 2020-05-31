@@ -34,8 +34,10 @@ weiboRouter.get('/:id', async (ctx) => {
     const page = await ctx.browser.newPage();
     await page.goto(`https://weibo.com/u/${ctx.params['id']}`);
     try {
-        await page.waitForSelector('.WB_detail', {timeout: 10000});
+        await page.waitForSelector('.WB_detail', {timeout: 5000});
     } catch {
+        page.close();
+        ctx.status = 404;
         ctx.body = [];
         return;
     }
@@ -55,9 +57,13 @@ weiboRouter.get('/:id', async (ctx) => {
             item.text = element.querySelector(TEXT_SELECTOR).textContent.trim();
 
             const TIMESTAMP_SELECTOR = '.WB_from';
-            item.timestamp = element.querySelector(TIMESTAMP_SELECTOR).firstElementChild.getAttribute('date');
+            const timeLink = element.querySelector(TIMESTAMP_SELECTOR).firstElementChild;
 
-            item.id = element.querySelector(TIMESTAMP_SELECTOR).firstElementChild.getAttribute('name');
+            item.timestamp = timeLink.getAttribute('date');
+
+            item.id = timeLink.getAttribute('name');
+
+            item.link = `https://weibo.com${timeLink.getAttribute('href')}`
 
             return item;
         });
