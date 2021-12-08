@@ -1,4 +1,5 @@
 const Router = require('@koa/router');
+const fetch = require('node-fetch');
 
 const weiboRouter = new Router();
 
@@ -31,45 +32,18 @@ weiboRouter.get('/search/:keyword', async (ctx) => {
 });
 
 weiboRouter.get('/:id', async (ctx) => {
-    const page = await ctx.browser.newPage();
-    await page.goto(`https://weibo.com/u/${ctx.params['id']}`);
-    try {
-        await page.waitForSelector('.WB_detail', {timeout: 10000});
-    } catch {
-        page.close();
-        ctx.status = 404;
-        ctx.body = [];
-        return;
-    }
+    const response = await fetch(`https://m.weibo.cn/profile/info?uid=${ctx.params['id']}`);
+    const data = await response.json();
 
-    const items = await page.evaluate(() => {
-        const SELECTOR = '.WB_detail';
-        
-        const elements = Array.from(document.querySelectorAll(SELECTOR));
-
-        return elements.map((element) => {
-            const item = {};
-
-            const NAME_SELECTOR = ".W_fb";
-            item.name = element.querySelector(NAME_SELECTOR).textContent;
-
-            const TEXT_SELECTOR = ".WB_text";
-            item.text = element.querySelector(TEXT_SELECTOR).textContent.trim();
-
-            const TIMESTAMP_SELECTOR = '.WB_from';
-            const timeLink = element.querySelector(TIMESTAMP_SELECTOR).firstElementChild;
-
-            item.timestamp = timeLink.getAttribute('date');
-
-            item.id = timeLink.getAttribute('name');
-
-            item.link = `https://weibo.com${timeLink.getAttribute('href')}`
-
-            return item;
-        });
+    const items = data.data.statuses.map(status => {
+        return {
+            name: status.user.screen_name,
+            text: status.text,
+            timestamp: status.created_at,
+            id: status.id,
+            link: `https://m.weibo.cn/detail/${status.id}`,
+        }
     });
-
-    page.close();
 
     ctx.body = items;
 });
