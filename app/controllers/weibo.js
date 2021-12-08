@@ -39,7 +39,7 @@ weiboRouter.get('/:id', async (ctx) => {
         return {
             name: status.user.screen_name,
             text: status.text,
-            timestamp: status.created_at,
+            timestamp: new Date(status.created_at).getTime(),
             id: status.id,
             link: `https://m.weibo.cn/detail/${status.id}`,
         }
